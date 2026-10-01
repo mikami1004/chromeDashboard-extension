@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>新しいタブ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div id="weather-container">
+    <span id="weather-icon">--</span>
+    <span id="weather-temp">--℃</span>
+    <div id="weather-location">位置情報取得中...</div>
+  </div>
+
+  <main class="container">
+    <h1 id="clock">00:00</h1>
+    <h2 id="greeting">Hello!</h2>
+
+    <div class="todo-container">
+      <input type="text" id="todo-input" placeholder="What is your today's task?">
+      <ul id="todo-list"></ul>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
