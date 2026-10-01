@@ -11,7 +11,7 @@ Chromeの新しいタブ(New tab)画面を時計、天気予報、ToDoリスト�
 ## インストール方法
 1. このリポジトリをダウンロードまたはクローンします。
    ```bash
-   git clone [https://github.com/mikami1004/chromeDashboard-extension.git](https://github.com/mikami1004/chromeDashboard-extension.git)
+   git clone https://github.com/mikami1004/chromeDashboard-extension.git
    ```
 2. Google Chromeを開き、アドレスバーに`chrome://extensions`を入力して移動します。
 3. 画面右上の**デベロッパーモード**をオンにします。
