@@ -24,6 +24,23 @@
     </div>
   </main>
 
+  <div id="shortcuts-container">
+    <div id="shortcuts-list"></div>
+    <button id="add-shortcut-btn" title="ショートカットを追加"></button>
+  </div>
+
+  <div id="shortcut-modal" class="modal">
+    <div class="modal-content">
+      <h3>ショートカットの追加</h3>
+      <input type="text" id="shortcut-name-input" placeholder="名前(例: GitHub)">
+      <input type="url" id="shortcut-url-input" placeholder="URL">
+      <div class="modal-buttons">
+        <button id="modal-cancel-btn">キャンセル</button>
+        <button id="modal-save-btn">保存</button>
+      </div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

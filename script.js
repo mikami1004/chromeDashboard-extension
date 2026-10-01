@@ -150,3 +150,102 @@ function initWeather() {
 }
 
 initWeather();
+
+// --- 4. カスタムショートカット機能 ---
+const shortcutsList = document.getElementById('shortcuts-list');
+const addShortcutBtn = document.getElementById('add-shortcut-btn');
+const shortcutModal = document.getElementById('shortcut-modal');
+const modalCancelBtn = document.getElementById('modal-cancel-btn');
+const modalSaveBtn = document.getElementById('modal-save-btn');
+const nameInput = document.getElementById('shortcut-name-input');
+const urlInput = document.getElementById('shortcut-url-input');
+
+// 初期読み込み
+chrome.storage.local.get(['shortcuts'], (result) => {
+  const shortcuts = result.shortcuts || [
+    // 初期表示例（未保存時）
+    { name: 'Google', url: 'https://www.google.com' },
+    { name: 'YouTube', url: 'https://www.youtube.com' },
+    { name: 'GitHub', url: 'https://github.com' }
+  ];
+  shortcuts.forEach(s => addShortcutToDOM(s.name, s.url));
+});
+
+// モーダル開閉
+addShortcutBtn.addEventListener('click', () => {
+  shortcutModal.style.display = 'flex';
+  nameInput.focus();
+});
+
+modalCancelBtn.addEventListener('click', closeModal);
+
+function closeModal() {
+  shortcutModal.style.display = 'none';
+  nameInput.value = '';
+  urlInput.value = '';
+}
+
+// ショートカット保存
+modalSaveBtn.addEventListener('click', () => {
+  const name = nameInput.value.trim();
+  let url = urlInput.value.trim();
+
+  if (!name || !url) return;
+
+  // http:// や https:// がなければ補完
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+
+  addShortcutToDOM(name, url);
+  saveShortcut(name, url);
+  closeModal();
+});
+
+// DOM描画
+function addShortcutToDOM(name, url) {
+  const item = document.createElement('a');
+  item.className = 'shortcut-item';
+  item.href = url;
+  item.target = '_self'; // 同一タブで開く
+
+  // GoogleのFavicon取得サービスを利用
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=64`;
+
+  item.innerHTML = `
+    <div class="shortcut-icon-wrapper">
+      <img src="${faviconUrl}" alt="${name}" onerror="this.src='https://dummyimage.com/32/ffffff/000000.png&text=${name.charAt(0)}'">
+    </div>
+    <span class="shortcut-title">${name}</span>
+    <button class="shortcut-delete-btn">✕</button>
+  `;
+
+  // 削除ボタンイベント
+  const deleteBtn = item.querySelector('.shortcut-delete-btn');
+  deleteBtn.addEventListener('click', (e) => {
+    e.preventDefault(); // リンク遷移を防止
+    e.stopPropagation();
+    item.remove();
+    removeShortcut(url);
+  });
+
+  shortcutsList.appendChild(item);
+}
+
+// chrome.storage に保存
+function saveShortcut(name, url) {
+  chrome.storage.local.get(['shortcuts'], (result) => {
+    const shortcuts = result.shortcuts || [];
+    shortcuts.push({ name, url });
+    chrome.storage.local.set({ shortcuts });
+  });
+}
+
+// chrome.storage から削除
+function removeShortcut(url) {
+  chrome.storage.local.get(['shortcuts'], (result) => {
+    let shortcuts = result.shortcuts || [];
+    shortcuts = shortcuts.filter(s => s.url !== url);
+    chrome.storage.local.set({ shortcuts });
+  });
+}
