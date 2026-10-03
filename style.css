@@ -188,24 +188,53 @@ body {
   display: flex;
 }
 
-/* 追加（+）ボタン */
-#add-shortcut-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px dashed rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 1.5rem;
+/* --- ★ 他のショートカットと高さを揃えた追加ボタン --- */
+button#add-shortcut-btn {
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
+  font-family: inherit;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: normal;
+  line-height: normal;
 }
 
-#add-shortcut-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+/* 追加（＋）専用のアイコン外枠 */
+.add-icon-wrapper {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+}
+
+/* ＋記号のスタイル */
+.add-plus-symbol {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: white;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform 0.25s ease;
+}
+
+/* ホバー時の連携アニメーション */
+#add-shortcut-btn:hover .add-icon-wrapper {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+#add-shortcut-btn:hover .add-plus-symbol {
+  transform: translateY(-1px) scale(1.15);
+}
+
+/* 押したときのフィードバック */
+#add-shortcut-btn:active .add-icon-wrapper {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* --- モーダルダイアログ --- */

@@ -229,7 +229,8 @@ function addShortcutToDOM(name, url) {
     removeShortcut(url);
   });
 
-  shortcutsList.appendChild(item);
+  const addBtn = document.getElementById('add-shortcut-btn');
+  shortcutsList.insertBefore(item, addBtn);
 }
 
 // chrome.storage に保存
