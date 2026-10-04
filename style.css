@@ -33,8 +33,18 @@ body {
 }
 
 .container {
-  position: relative;
+  position: static;
   z-index: 2;
+}
+
+.todo-container {
+  margin-top: 20px;
+  position: absolute;
+  top: 110px;
+  left: 30px;
+  z-index: 5;
+  width: 300px;
+  text-align: left;
 }
 
 /* --- 天気予報 左上表示 --- */
@@ -84,6 +94,7 @@ body {
 }
 
 .todo-container input {
+  text-align: center;
   width: 300px;
   padding: 10px 20px;
   border: 1px solid var(--glass-border);
@@ -103,9 +114,11 @@ body {
   margin-top: 15px;
   list-style: none;
   text-align: left;
+  width: 100%;
 }
 
 #todo-list li {
+  width: 100%;
   margin-top: 5px;
   padding: 8px 12px;
   border-radius: 5px;
