@@ -1,28 +1,35 @@
+:root {
+  --text-color: #ffffff;
+  --panel-bg: rgba(0, 0, 0, 0.3);
+  --panel-bg-strong: rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --shadow-soft: rgba(0, 0, 0, 0.3);
+}
+
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-    /* ランダムな画像を表示する(Picsum) */
-    background: url('https://picsum.photos/1920/1080') no-repeat center/cover;
-    position: relative;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: var(--text-color);
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('https://picsum.photos/1920/1080') no-repeat center/cover;
 }
 
-/* 背景画像を少し暗くする */
 .overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .container {
@@ -30,58 +37,61 @@ body {
   z-index: 2;
 }
 
-/* --- 天気予報　左上に表示 --- */
+/* --- 天気予報 左上表示 --- */
 #weather-container {
   position: absolute;
   top: 25px;
   left: 30px;
-  z-index: 10; /* 最前面 */
-  color: white;
+  z-index: 10;
+  color: var(--text-color);
   text-align: left;
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   font-family: sans-serif;
 }
 
+#weather-icon,
+#weather-temp {
+  vertical-align: middle;
+}
+
 #weather-icon {
   font-size: 2rem;
-  vertical-align: middle;
 }
 
 #weather-temp {
+  margin-left: 8px;
   font-size: 1.8rem;
   font-weight: bold;
-  margin-left: 8px;
-  vertical-align: middle;
 }
 
 #weather-location {
+  margin-top: 2px;
   font-size: 0.85rem;
   opacity: 0.8;
-  margin-top: 2px;
 }
 
 #clock {
   font-size: 6rem;
   font-weight: 300;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 10px var(--shadow-soft);
 }
 
 #greeting {
+  margin-bottom: 2rem;
   font-size: 2.2rem;
   font-weight: 400;
-  margin-bottom: 2rem;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 5px var(--shadow-soft);
 }
 
 .todo-container input {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  width: 300px;
   padding: 10px 20px;
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
-  color: white;
+  background: var(--glass-bg);
+  color: var(--text-color);
   font-size: 1.1rem;
   outline: none;
-  width: 300px;
   backdrop-filter: blur(5px);
 }
 
@@ -90,40 +100,39 @@ body {
 }
 
 #todo-list {
-  list-style: none;
   margin-top: 15px;
+  list-style: none;
   text-align: left;
 }
 
 #todo-list li {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 8px 12px;
   margin-top: 5px;
+  padding: 8px 12px;
   border-radius: 5px;
+  background: var(--panel-bg-strong);
   cursor: pointer;
 }
 
 /* --- ショートカット追加 --- */
-/* --- ★ 画面下部：ショートカットエリア（中央寄せ） --- */
 #shortcuts-container {
   position: absolute;
   bottom: 30px;
   left: 50%;
-  transform: translateX(-50%);
   z-index: 10;
   display: flex;
   align-items: center;
   gap: 15px;
-  background: rgba(0, 0, 0, 0.3);
   padding: 10px 20px;
   border-radius: 30px;
+  background: var(--panel-bg);
+  transform: translateX(-50%);
   backdrop-filter: blur(8px);
 }
 
 #shortcuts-list {
   display: flex;
-  gap: 15px;
   align-items: center;
+  gap: 15px;
 }
 
 .shortcut-item {
@@ -131,10 +140,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-decoration: none;
-  color: white;
-  font-size: 0.75rem;
   width: 60px;
+  color: var(--text-color);
+  font-size: 0.75rem;
+  text-decoration: none;
   transition: transform 0.2s;
 }
 
@@ -143,14 +152,14 @@ body {
 }
 
 .shortcut-icon-wrapper {
-  width: 42px;
-  height: 42px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 42px;
+  height: 42px;
   margin-bottom: 5px;
+  background: var(--glass-bg);
+  border-radius: 50%;
 }
 
 .shortcut-icon-wrapper img {
@@ -160,48 +169,45 @@ body {
 }
 
 .shortcut-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* 削除ボタン（ホバー時に表示） */
 .shortcut-delete-btn {
   position: absolute;
   top: -4px;
   right: 4px;
-  background: rgba(255, 0, 0, 0.8);
-  color: white;
-  border: none;
-  border-radius: 50%;
+  display: none;
+  justify-content: center;
+  align-items: center;
   width: 18px;
   height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.8);
+  color: var(--text-color);
   font-size: 10px;
   cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
 }
 
 .shortcut-item:hover .shortcut-delete-btn {
   display: flex;
 }
 
-/* --- ★ 他のショートカットと高さを揃えた追加ボタン --- */
 button#add-shortcut-btn {
-  background: none;
-  border: none;
   padding: 0;
-  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text-color);
   font-family: inherit;
-  color: white;
   font-size: 0.75rem;
   font-weight: normal;
   line-height: normal;
+  cursor: pointer;
 }
 
-/* 追加（＋）専用のアイコン外枠 */
 .add-icon-wrapper {
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.15);
@@ -210,17 +216,15 @@ button#add-shortcut-btn {
   transition: all 0.25s ease;
 }
 
-/* ＋記号のスタイル */
 .add-plus-symbol {
+  color: var(--text-color);
   font-size: 1.5rem;
   font-weight: 300;
-  color: white;
   line-height: 1;
   transform: translateY(-1px);
   transition: transform 0.25s ease;
 }
 
-/* ホバー時の連携アニメーション */
 #add-shortcut-btn:hover .add-icon-wrapper {
   background: rgba(255, 255, 255, 0.35);
   border-color: rgba(255, 255, 255, 0.7);
@@ -231,7 +235,6 @@ button#add-shortcut-btn {
   transform: translateY(-1px) scale(1.15);
 }
 
-/* 押したときのフィードバック */
 #add-shortcut-btn:active .add-icon-wrapper {
   transform: scale(0.95);
   background: rgba(255, 255, 255, 0.25);
@@ -239,22 +242,22 @@ button#add-shortcut-btn {
 
 /* --- モーダルダイアログ --- */
 .modal {
-  display: none;
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  display: none;
   z-index: 100;
   justify-content: center;
   align-items: center;
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .modal-content {
-  background: #2a2a2a;
+  width: 320px;
   padding: 25px;
   border-radius: 12px;
-  width: 320px;
+  background: #2a2a2a;
   color: white;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .modal-content h3 {
@@ -263,14 +266,19 @@ button#add-shortcut-btn {
 }
 
 .modal-content input {
+  box-sizing: border-box;
   width: 100%;
   padding: 10px;
   margin-bottom: 12px;
-  border-radius: 6px;
   border: 1px solid #444;
+  border-radius: 6px;
   background: #333;
   color: white;
-  box-sizing: border-box;
+}
+
+.modal-content input:focus {
+  outline: 2px solid rgba(0, 123, 255, 0.8);
+  outline-offset: 1px;
 }
 
 .modal-buttons {
@@ -281,10 +289,52 @@ button#add-shortcut-btn {
 
 .modal-buttons button {
   padding: 8px 16px;
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
-#modal-cancel-btn { background: #555; color: white; }
-#modal-save-btn { background: #007bff; color: white; }
+.modal-buttons button:hover {
+  opacity: 0.9;
+}
+
+#modal-cancel-btn {
+  background: #555;
+  color: white;
+}
+
+#modal-save-btn {
+  background: #007bff;
+  color: white;
+}
+
+@media (max-width: 560px) {
+  #weather-container {
+    top: 15px;
+    left: 18px;
+  }
+
+  #clock {
+    font-size: 4.2rem;
+  }
+
+  #greeting {
+    font-size: 1.8rem;
+  }
+
+  .todo-container input {
+    width: min(80vw, 300px);
+  }
+
+  #shortcuts-container {
+    bottom: 18px;
+    width: calc(100% - 24px);
+    padding: 10px 12px;
+    overflow-x: auto;
+  }
+
+  #shortcuts-list {
+    gap: 10px;
+  }
+}

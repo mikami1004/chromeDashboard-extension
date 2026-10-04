@@ -21,48 +21,54 @@ updateClock();
 const todoInput = document.getElementById('todo-input');
 const todoList = document.getElementById('todo-list');
 
-// 保存されているToDoを読み込む
-chrome.storage.local.get(['todos'], (result) => {
-  const todos = result.todos || [];
-  todos.forEach(todo => addTodoToDOM(todo));
-});
+function getStoredList(key, fallback = []) {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([key], (result) => {
+      resolve(result[key] || fallback);
+    });
+  });
+}
 
-// Enterキーで新しいToDoを追加
-todoInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter' && todoInput.value.trim() !== '') {
-    const todoText = todoInput.value.trim();
-    addTodoToDOM(todoText);
-    saveTodo(todoText);
-    todoInput.value = '';
-  }
-});
+function setStoredList(key, items) {
+  chrome.storage.local.set({ [key]: items });
+}
+
+async function loadTodos() {
+  const todos = await getStoredList('todos');
+  todos.forEach((todo) => addTodoToDOM(todo));
+}
 
 function addTodoToDOM(text) {
   const li = document.createElement('li');
   li.textContent = text;
-  // クリックで削除
-  li.addEventListener('click', () => {
+
+  li.addEventListener('click', async () => {
     li.remove();
-    removeTodo(text);
+    const todos = await getStoredList('todos');
+    const filteredTodos = todos.filter((todo) => todo !== text);
+    setStoredList('todos', filteredTodos);
   });
+
   todoList.appendChild(li);
 }
 
-function saveTodo(text) {
-  chrome.storage.local.get(['todos'], (result) => {
-    const todos = result.todos || [];
-    todos.push(text);
-    chrome.storage.local.set({ todos });
-  });
+async function saveTodo(text) {
+  const todos = await getStoredList('todos');
+  setStoredList('todos', [...todos, text]);
 }
 
-function removeTodo(text) {
-  chrome.storage.local.get(['todos'], (result) => {
-    let todos = result.todos || [];
-    todos = todos.filter(t => t !== text);
-    chrome.storage.local.set({ todos });
-  });
-}
+// 保存されているToDoを読み込む
+loadTodos();
+
+// Enterキーで新しいToDoを追加
+todoInput.addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter' && todoInput.value.trim() !== '') {
+    const todoText = todoInput.value.trim();
+    addTodoToDOM(todoText);
+    await saveTodo(todoText);
+    todoInput.value = '';
+  }
+});
 
 // --- 3. 天気予報機能 ---
 function getWeatherIcon(code) {
@@ -160,16 +166,28 @@ const modalSaveBtn = document.getElementById('modal-save-btn');
 const nameInput = document.getElementById('shortcut-name-input');
 const urlInput = document.getElementById('shortcut-url-input');
 
+const defaultShortcuts = [
+  { name: 'Google', url: 'https://www.google.com' },
+  { name: 'YouTube', url: 'https://www.youtube.com' },
+  { name: 'GitHub', url: 'https://github.com' }
+];
+
+function normalizeUrl(url) {
+  if (!/^https?:\/\//i.test(url)) {
+    return `https://${url}`;
+  }
+  return url;
+}
+
+async function loadShortcuts() {
+  const shortcuts = await getStoredList('shortcuts', defaultShortcuts);
+  shortcuts.forEach((shortcut) => {
+    addShortcutToDOM(shortcut.name, shortcut.url);
+  });
+}
+
 // 初期読み込み
-chrome.storage.local.get(['shortcuts'], (result) => {
-  const shortcuts = result.shortcuts || [
-    // 初期表示例（未保存時）
-    { name: 'Google', url: 'https://www.google.com' },
-    { name: 'YouTube', url: 'https://www.youtube.com' },
-    { name: 'GitHub', url: 'https://github.com' }
-  ];
-  shortcuts.forEach(s => addShortcutToDOM(s.name, s.url));
-});
+loadShortcuts();
 
 // モーダル開閉
 addShortcutBtn.addEventListener('click', () => {
@@ -186,19 +204,15 @@ function closeModal() {
 }
 
 // ショートカット保存
-modalSaveBtn.addEventListener('click', () => {
+modalSaveBtn.addEventListener('click', async () => {
   const name = nameInput.value.trim();
-  let url = urlInput.value.trim();
+  let url = normalizeUrl(urlInput.value.trim());
 
-  if (!name || !url) return;
-
-  // http:// や https:// がなければ補完
-  if (!/^https?:\/\//i.test(url)) {
-    url = 'https://' + url;
-  }
+  if (!name || !urlInput.value.trim()) return;
 
   addShortcutToDOM(name, url);
-  saveShortcut(name, url);
+  const shortcuts = await getStoredList('shortcuts');
+  setStoredList('shortcuts', [...shortcuts, { name, url }]);
   closeModal();
 });
 
@@ -209,7 +223,6 @@ function addShortcutToDOM(name, url) {
   item.href = url;
   item.target = '_self'; // 同一タブで開く
 
-  // GoogleのFavicon取得サービスを利用
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=64`;
 
   item.innerHTML = `
@@ -220,33 +233,16 @@ function addShortcutToDOM(name, url) {
     <button class="shortcut-delete-btn">✕</button>
   `;
 
-  // 削除ボタンイベント
   const deleteBtn = item.querySelector('.shortcut-delete-btn');
-  deleteBtn.addEventListener('click', (e) => {
-    e.preventDefault(); // リンク遷移を防止
+  deleteBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
     e.stopPropagation();
     item.remove();
-    removeShortcut(url);
+    const shortcuts = await getStoredList('shortcuts');
+    const filteredShortcuts = shortcuts.filter((shortcut) => shortcut.url !== url);
+    setStoredList('shortcuts', filteredShortcuts);
   });
 
   const addBtn = document.getElementById('add-shortcut-btn');
   shortcutsList.insertBefore(item, addBtn);
-}
-
-// chrome.storage に保存
-function saveShortcut(name, url) {
-  chrome.storage.local.get(['shortcuts'], (result) => {
-    const shortcuts = result.shortcuts || [];
-    shortcuts.push({ name, url });
-    chrome.storage.local.set({ shortcuts });
-  });
-}
-
-// chrome.storage から削除
-function removeShortcut(url) {
-  chrome.storage.local.get(['shortcuts'], (result) => {
-    let shortcuts = result.shortcuts || [];
-    shortcuts = shortcuts.filter(s => s.url !== url);
-    chrome.storage.local.set({ shortcuts });
-  });
 }
